@@ -1,0 +1,6 @@
+com\test\bean\PersonalBean.class
+com\test\bean\ProductoBean.class
+com\test\bean\ClienteBean.class
+com\test\conexion\VariablesConexion.class
+com\mycompany\compra_comida_online\resources\JavaEE8Resource.class
+com\mycompany\compra_comida_online\JAXRSConfiguration.class
