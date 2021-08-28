@@ -6,5 +6,5 @@
 
 
 <%@include file="componentes/header.jsp" %>
-        <h1>Compras Comida Online</h1>
+    <h1>Compras Comida Online</h1>
 <%@include file="componentes/footer.jsp" %>
