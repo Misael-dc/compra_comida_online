@@ -32,8 +32,13 @@
                         <li class="nav-item">
                           <a class="nav-link" href="registrarCliente.jsp">Registrar Cliente</a>
                         </li>
-                        
-                       
+                        <li class="nav-item">
+                          <a class="nav-link" href="menuPlatos.jsp">Menú</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="listaPedidos.jsp">Lista Pedidos</a>
+                        </li>
+
                       </ul>
                       
                     </div>

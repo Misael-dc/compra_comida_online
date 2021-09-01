@@ -7,9 +7,14 @@ package com.test.bean;
 
 import com.test.conexion.VariablesConexion;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PreDestroy;
@@ -92,31 +97,37 @@ public class PlatosBean {
     
     
     
-    public void RegistrarPedido(HttpServletRequest request){
-        insertPersonal = null;
+    public void RegistrarPedido(HttpServletRequest request) throws ParseException{
+        PreparedStatement insertPedido = null;
         if(connection != null){
             try {
                 //definiendo la consulta
+                LocalDate fecha = LocalDate.of(2020, Month.OCTOBER, 25);
+                
+                
                 StringBuilder query = new StringBuilder();
                 query.append(" insert into pedido ");
-                query.append(" values (nextval('secuencia_2'),?,?,?,?)");
+                query.append(" values (nextval('secuencia_2'),?,?,?, '"+ fecha.toString()+"',?)");
+                
                 //enviando la consulta
-                if(insertPersonal == null){
-                    insertPersonal = connection.prepareStatement(query.toString());
+                if(insertPedido == null){
+                    insertPedido = connection.prepareStatement(query.toString());
                 }
+                
                 //rescatando los parametros del formulario jsp registrarCategoria
                 String idCliente = request.getParameter("idCliente");
                 String idRepartidor = request.getParameter("idRepartidor");
                 String formaPago = request.getParameter("formaPago");
-                String fecha = "21-12-12";
+                String direccion = request.getParameter("direccion");
+
                 //pasando los datos a los parametros de la consulta
-                insertPersonal.setInt(1, Integer.valueOf(idCliente));
-                insertPersonal.setInt(2, Integer.valueOf(idRepartidor));
-                insertPersonal.setString(3, formaPago);
-                insertPersonal.setString(4, fecha);         
+                insertPedido.setInt(1, Integer.valueOf(idCliente));
+                insertPedido.setInt(2, Integer.valueOf(idRepartidor));
+                insertPedido.setString(3, formaPago);        
+                insertPedido.setString(4, direccion);         
                 
                 //ejecutando la consulta
-                int registro = insertPersonal.executeUpdate();
+                int registro = insertPedido.executeUpdate();
                 
                 if(registro == 1){
                     String mensaje="Registro realizado con exito";
@@ -130,38 +141,57 @@ public class PlatosBean {
         
     } 
     public String RegistrarFactura(List<ArrayList<String>> lista){
-        insertPersonal = null;
+        
         if(connection != null){
             try {
                 //definiendo la consulta
                 StringBuilder query = new StringBuilder();
-                StringBuilder query2 = new StringBuilder();
                 
-                query2.append(" SELECT * FROM tabla ORDER BY oid DESC LIMIT 1;");
+                query.append(" SELECT * FROM pedido ORDER BY id DESC LIMIT 1;");
                 PreparedStatement pst = connection.prepareStatement(query.toString());
                 ResultSet resultado = pst.executeQuery();
                 
+                int idPedido = 0;
                 while(resultado.next()){
-                    int idPedido = resultado.getInt(1);
+                    idPedido = resultado.getInt(1);
                 }
-                query.append(" insert into factura ");
-                query.append(" values ?,?,?,?)");
                 
-                
-                //enviando la consulta
-                if(insertPersonal == null){
-                    insertPersonal = connection.prepareStatement(query.toString());
+                for (ArrayList<String> datos : lista) {   
+                    PreparedStatement insertFactura = null;
+                    
+                    StringBuilder query2 = new StringBuilder();
+                    query2.append(" insert into factura ");
+                    query2.append(" values ( ?,?,?,?,? )");
+                       
+                    int cantidad = Integer.valueOf(datos.get(2));
+                    double total = Double.valueOf(datos.get(3));
+                    int idPlato = Integer.valueOf(datos.get(4));
+                    
+                    double descuento = 0;
+
+                    //enviando la consulta
+                    
+                    insertFactura = connection.prepareStatement(query2.toString());
+
+                    
+                    insertFactura.setInt(1, idPedido);
+                    insertFactura.setInt(2, idPlato);
+                    insertFactura.setDouble(3, descuento);
+                    insertFactura.setDouble(4, total);
+                    insertFactura.setInt(5, cantidad);
+                    
+
+
+                    //ejecutando la consulta
+                    int registro = insertFactura.executeUpdate();
+
+                    if(registro == 1){
+                        System.out.println("Registrado");
+                    }else{
+                        System.out.println("No se ha Registrado");
+                    }
                 }
-                   
                 
-                //ejecutando la consulta
-                int registro = insertPersonal.executeUpdate();
-                
-                if(registro == 1){
-                    String mensaje="Registro realizado con exito";
-                }else{
-                    String mensaje="Error al insertar el registro";
-                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }

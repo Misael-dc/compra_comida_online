@@ -18,6 +18,7 @@
                 
                 Double subtotal = precio * cantidad;            
                 ArrayList<String> platoInfo = new ArrayList<String>(); 
+                
                 platoInfo.add(request.getParameter("nombre"));
                 platoInfo.add(String.valueOf(precio));
                 platoInfo.add(String.valueOf(cantidad));

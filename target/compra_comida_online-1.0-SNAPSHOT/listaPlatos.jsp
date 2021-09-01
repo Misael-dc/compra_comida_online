@@ -21,6 +21,9 @@
             if(request.getParameter("pedir") != null){
                 platosBean.RegistrarPedido(request);
                 platosBean.RegistrarFactura(listaPlatos);
+                
+                session.invalidate();
+                response.sendRedirect("menuPlatos.jsp");
             }
         %>
     <div class="card">
@@ -86,6 +89,10 @@
                             <option value="payPal">payPal</option>
                             <option value="Tarjeta Credito">Tarjeta de credito</option>
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Direccion</label>
+                        <input class="form-control" type="text" name="direccion" />
                     </div>
                     
     
