@@ -49,8 +49,8 @@ public class PersonalBean {
                 query.append(" insert into personal_entrega ");
                 query.append(" values (nextval('secuencia_3'),?,?,?,?,?,?)");
                 //enviando la consulta
-                if(insertPersonal==null){
-                    insertPersonal=connection.prepareStatement(query.toString());
+                if(insertPersonal == null){
+                    insertPersonal = connection.prepareStatement(query.toString());
                 }
                 //rescatando los parametros del formulario jsp registrarCategoria
                 String nombre = request.getParameter("nombre");
@@ -86,7 +86,8 @@ public class PersonalBean {
     public String listarPersonal(){
         StringBuilder salidaTabla = new StringBuilder();
         StringBuilder query = new StringBuilder();
-        query.append(" select p.ci, concat(p.nombres,' ',p.paterno,' ',p.materno ), telefono, placa_vehiculo");
+        
+        query.append(" select p.ci, concat(p.nombres,' ',p.paterno,' ',p.materno ), telefono, placa_vehiculo, id");
         query.append(" from personal_entrega p ");
         try {
             PreparedStatement pst = connection.prepareStatement(query.toString());
@@ -105,6 +106,12 @@ public class PersonalBean {
                 salidaTabla.append("<td>");
                 salidaTabla.append(resultado.getString(4));
                 salidaTabla.append("</td>");
+                salidaTabla.append("<td>");
+                salidaTabla.append("<form method='POST'>");
+                salidaTabla.append("<input name='id' type='hidden' value='" + resultado.getString(5) + "' >");
+                salidaTabla.append("<button type=\"submit\" class=\"btn btn-danger\" name=\"eliminar\">Eliminar</button>");  
+                salidaTabla.append("</form>");
+                salidaTabla.append("</td>");
                 salidaTabla.append("</tr>");
             }
         } catch (SQLException e) {
@@ -112,6 +119,39 @@ public class PersonalBean {
             System.out.println("Error de conexion");
         }
         return salidaTabla.toString();
+    }
+    
+    public String eliminarPersonal(HttpServletRequest request){
+        String mensaje = "";
+        if(connection != null){
+            try {
+                //definiendo la consulta
+                StringBuilder query = new StringBuilder();
+                
+                int id = Integer.valueOf(request.getParameter("id"));
+                
+                query.append(" DELETE FROM personal_entrega ");
+                query.append(" WHERE id = " + id + " ");
+               
+                //enviando la consulta
+
+                PreparedStatement eliminarPersonal  = connection.prepareStatement(query.toString());
+                
+                //ejecutando la consulta
+                
+                int registro = eliminarPersonal.executeUpdate();
+                
+                if(registro == 1){
+                    mensaje="Registro Eliminado...";
+                }else{
+                    mensaje="Error al Eliminar el registro...";
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return mensaje;
     }
     
     

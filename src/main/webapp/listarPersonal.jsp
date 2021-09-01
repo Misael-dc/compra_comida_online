@@ -4,9 +4,16 @@
     Author     : Desktop
 --%>
 
+<%@page import="java.util.List"%>
 <%@include file="componentes/header.jsp" %>
 <main class="container mt-5 mb-5">
     <jsp:useBean id="personalBean" scope="session" class="com.test.bean.PersonalBean"/>
+        <%
+            if(request.getParameter("eliminar") != null){
+                String mensaje = personalBean.eliminarPersonal(request);
+                out.print(mensaje);
+            }
+        %>
     <div class="card">
       <div class="card-header">
         <h2>Lista Empleado</h2>
@@ -19,6 +26,7 @@
                     <th>Nombre</th>
                     <th>Telefono</th>
                     <th>Placa</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
